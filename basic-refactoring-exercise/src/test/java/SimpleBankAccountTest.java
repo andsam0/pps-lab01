@@ -10,44 +10,54 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SimpleBankAccountTest {
 
+    private static final int INITIAL_BALANCE = 0;
+    private static final int DEPOSIT_AMOUNT = 100;
     private AccountHolder accountHolder;
     private BankAccount bankAccount;
 
     @BeforeEach
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
-        bankAccount = new SimpleBankAccount(accountHolder, 0);
+        bankAccount = new SimpleBankAccount(accountHolder, INITIAL_BALANCE);
     }
 
     @Test
     void testInitialBalance() {
-        assertEquals(0, bankAccount.getBalance());
+        assertEquals(INITIAL_BALANCE, bankAccount.getBalance());
     }
 
     @Test
     void testDeposit() {
-        bankAccount.deposit(accountHolder.id(), 100);
-        assertEquals(100, bankAccount.getBalance());
+        bankAccount.deposit(accountHolder.id(), DEPOSIT_AMOUNT);
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
     }
 
     @Test
     void testWrongDeposit() {
-        bankAccount.deposit(accountHolder.id(), 100);
-        bankAccount.deposit(2, 50);
-        assertEquals(100, bankAccount.getBalance());
+        int otherUserAmount = 50;
+        int otherUserId = 2;
+        bankAccount.deposit(accountHolder.id(), DEPOSIT_AMOUNT);
+        bankAccount.deposit(otherUserId, otherUserAmount);
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
     }
 
     @Test
     void testWithdraw() {
-        bankAccount.deposit(accountHolder.id(), 100);
-        bankAccount.withdraw(accountHolder.id(), 70);
-        assertEquals(30, bankAccount.getBalance());
+        int withdrawAmount = 50;
+        doDepositAndWithdraw(accountHolder.id(), withdrawAmount);
+        assertEquals(DEPOSIT_AMOUNT - withdrawAmount, bankAccount.getBalance());
     }
 
     @Test
     void testWrongWithdraw() {
-        bankAccount.deposit(accountHolder.id(), 100);
-        bankAccount.withdraw(2, 70);
-        assertEquals(100, bankAccount.getBalance());
+        int otherUserId = 2;
+        int withdrawAmount = 70;
+        doDepositAndWithdraw(otherUserId, withdrawAmount);
+        assertEquals(DEPOSIT_AMOUNT, bankAccount.getBalance());
+    }
+
+    private void doDepositAndWithdraw(int id, int withdrawAmount){
+        bankAccount.deposit(accountHolder.id(), DEPOSIT_AMOUNT);
+        bankAccount.withdraw(id, withdrawAmount);
     }
 }
