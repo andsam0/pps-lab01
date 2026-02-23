@@ -43,6 +43,7 @@ class SimpleBankAccountTest {
 
     @Test
     void testWithdraw() {
+
         int withdrawAmount = 50;
         doDepositAndWithdraw(accountHolder.id(), withdrawAmount);
         assertEquals(DEPOSIT_AMOUNT - withdrawAmount, bankAccount.getBalance());
